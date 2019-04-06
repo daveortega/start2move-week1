@@ -32,6 +32,4 @@ public interface DbViewFacadeLocal {
     
     List<DbView> findByName(String fieldName, String fieldValue);
     
-    List<Object[]> findStopsPostCode();
-    
 }

@@ -6,9 +6,12 @@
 package com.davido.ejb;
 
 import com.davido.entities.DbbusStop;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +31,44 @@ public class DbbusStopFacade extends AbstractFacade<DbbusStop> implements DbbusS
     public DbbusStopFacade() {
         super(DbbusStop.class);
     }
-    
+
+    @Override
+    public List<Object[]> findStopsPostCode() {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+
+            querySTR = "SELECT DISTINCT count(X) stopsNo "
+                    + "FROM db_busStop a, db_postCode b "
+                    + "WHERE a.postCode = b.postCodeId "
+                    + "AND a.postLine = b.postCodeLine "
+                    + "GROUP BY b.postCodeName "
+                    + "ORDER BY 1";
+            Query query = em.createNativeQuery(querySTR);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
+    @Override
+    public List<Object[]> getAllBusStops() {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+
+            querySTR = "SELECT DISTINCT b.postCode, b.postCodeName, count(X) stopsNo "
+                    + "FROM db_busStop a, db_postCode b "
+                    + "WHERE a.postCode = b.postCodeId "
+                    + "AND a.postLine = b.postCodeLine "
+                    + "GROUP BY b.postCodeName;";
+            Query query = em.createNativeQuery(querySTR);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }

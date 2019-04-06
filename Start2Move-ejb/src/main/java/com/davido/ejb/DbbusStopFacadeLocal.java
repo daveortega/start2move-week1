@@ -30,4 +30,8 @@ public interface DbbusStopFacadeLocal {
 
     int count();
     
+    List<Object[]> findStopsPostCode();
+    
+    List<Object[]> getAllBusStops();
+    
 }
