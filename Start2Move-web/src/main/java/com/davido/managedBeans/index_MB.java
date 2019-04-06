@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.davido;
+package com.davido.managedBeans;
 
 import java.io.Serializable;
 import javax.inject.Named;
@@ -13,7 +13,7 @@ import javax.faces.view.ViewScoped;
  *
  * @author davidortega
  */
-@Named(value = "index_MB")
+@Named(value = "indexs_MB")
 @ViewScoped
 public class index_MB implements Serializable {
     

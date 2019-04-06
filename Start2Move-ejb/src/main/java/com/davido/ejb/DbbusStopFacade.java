@@ -58,11 +58,12 @@ public class DbbusStopFacade extends AbstractFacade<DbbusStop> implements DbbusS
         List<Object[]> resultantList = new ArrayList<>();
         try {
 
-            querySTR = "SELECT DISTINCT b.postCode, b.postCodeName, count(X) stopsNo "
+            querySTR = "SELECT DISTINCT b.postCodeId, b.postCodeName, count(X) stopsNo "
                     + "FROM db_busStop a, db_postCode b "
                     + "WHERE a.postCode = b.postCodeId "
                     + "AND a.postLine = b.postCodeLine "
-                    + "GROUP BY b.postCodeName;";
+                    + "GROUP BY a.postCode, b.postCodeName "
+                    + "ORDER BY 3";
             Query query = em.createNativeQuery(querySTR);
             resultantList = query.getResultList();
         } catch (Exception e) {
