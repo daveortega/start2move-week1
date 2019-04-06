@@ -29,5 +29,8 @@ public interface DbcrimeRateFacadeLocal {
     List<DbcrimeRate> findRange(int[] range);
 
     int count();
-    
+
+    List<Object[]> findCrime(List<String> listOfPostCodes);
+
+    List<Object[]> getAllCrime(List<String> listOfPostCodes);
 }

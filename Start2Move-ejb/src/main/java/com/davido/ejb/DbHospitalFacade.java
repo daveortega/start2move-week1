@@ -41,7 +41,9 @@ public class DbHospitalFacade extends AbstractFacade<DbHospital> implements DbHo
                     + "FROM db_hospital a, db_postCode b "
                     + "WHERE a.postCode = b.postCodeId "
                     + "AND a.postLine = b.postCodeLine "
-                    + "AND a.postCode IN ?1";
+                    + "AND a.postCode IN ?1 "
+                    + "GROUP BY b.postCodeName " 
+                    + "ORDER BY 1";
             Query query = em.createNativeQuery(querySTR);
             query.setParameter(1, listOfPostCodes);
             resultantList = query.getResultList();
@@ -50,5 +52,28 @@ public class DbHospitalFacade extends AbstractFacade<DbHospital> implements DbHo
         }
         return resultantList;
     }
+
+    @Override
+    public List<Object[]> getAllHospitals(List<String> listOfPostCodes) {
+                String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT b.postCodeId, b.postCodeName, count(X) hospitalsNo "
+                    + "FROM db_hospital a, db_postCode b "
+                    + "WHERE a.postCode = b.postCodeId "
+                    + "AND a.postLine = b.postCodeLine "
+                    + "AND a.postCode IN ?1 "
+                    + "GROUP BY a.postCode, b.postCodeName " 
+                    + "ORDER BY 3";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+    
+    
 
 }

@@ -32,4 +32,6 @@ public interface DbHospitalFacadeLocal {
     
     List<Object[]> findHospitals(List<String> listOfPostCodes);
     
+    List<Object[]> getAllHospitals(List<String> listOfPostCodes);
+    
 }

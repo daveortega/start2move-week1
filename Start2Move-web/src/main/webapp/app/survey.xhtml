@@ -7,20 +7,19 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>TODO supply a title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </h:head>
-    <body>
-        <div class="container">
-            <div class="surveyBox">
-                <f:view>
-                    <h:form>
+    <h:body>
+        <f:view>
+            <h:form>
+                <div class="container">
+                    <div class="surveyBox">
                         <div style="display:#{Survey_MB.enableQuestionOne?'block':'none'}">
-
-                            <p>Logged-in as #{request.userPrincipal.name}</p>
                             <h1>Question 1</h1>
                             <h:outputLabel value="#{Survey_MB.questionOneObj.header}"></h:outputLabel>
                             <br/>
@@ -59,9 +58,33 @@ and open the template in the editor.
                             </h:commandButton>
                             <br/> 
                         </div>
-                    </h:form>     
-                </f:view>
-            </div>
-        </div>  
-    </body>
+
+                        <div style="display:#{Survey_MB.enableQuestionThree?'block':'none'}">
+                            <h1>Question 3</h1>
+                            <h:outputLabel value="#{Survey_MB.questionThreeObj.header}"></h:outputLabel>
+                            <br/>
+                            <h:outputLabel value="#{Survey_MB.questionThreeObj.question}"></h:outputLabel>
+                            <br/>
+                            <h:outputLabel value="#{Survey_MB.questionThreeObj.hint}"></h:outputLabel>
+                            <br/>
+                            <h:outputLabel value="#{Survey_MB.questionThreeObj.leftLabel}"></h:outputLabel>
+                            <br/>
+                            <h:outputLabel value="#{Survey_MB.questionThreeObj.rightLabel}"></h:outputLabel>
+                            <br/>
+                            <p:inputText id="decimal" value="#{Survey_MB.answerQuestionThree}" />
+                            <p:slider for="decimal" minValue="#{Survey_MB.questionThreeObj.leftValue}" 
+                                      maxValue="#{Survey_MB.questionThreeObj.rightValue}" 
+                                      step="0.1"/>
+                            <br/>
+                            <h:commandButton value="#{Survey_MB.questionTwoObj.button}">
+                                <f:ajax listener="#{Survey_MB.buildSurvey('q4')}" execute="@form" render="@form"/>
+                            </h:commandButton>
+                            <br/> 
+                        </div>
+
+                    </div>
+                </div>  
+            </h:form>     
+        </f:view>
+    </h:body>
 </html>
