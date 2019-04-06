@@ -49,9 +49,19 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+        </dependency>
         
-        
-
+         <!-- model package -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Start2Move-ejb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+       
     </dependencies>
 
     <build>

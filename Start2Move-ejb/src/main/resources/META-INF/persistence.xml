@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.davido_Start2Move-ejb_ejb_1.0PU" transaction-type="JTA">
+    <jta-data-source>java:/RegionalVic</jta-data-source>
+    <class>com.davido.entities.DbDistrict</class>
+    <class>com.davido.entities.DbHospital</class>
+    <class>com.davido.entities.DbLocality</class>
+    <class>com.davido.entities.DbMunicipality</class>
+    <class>com.davido.entities.DbRegion</class>
+    <class>com.davido.entities.DbSchool</class>
+    <class>com.davido.entities.DbUser</class>
+    <class>com.davido.entities.DbView</class>
+    <class>com.davido.entities.DbWard</class>
+    <class>com.davido.entities.DbbusStop</class>
+    <class>com.davido.entities.DbcrimeRate</class>
+    <class>com.davido.entities.DbhouseBuying</class>
+    <class>com.davido.entities.DbhouseRent</class>
+    <class>com.davido.entities.DblandPrice</class>
+    <class>com.davido.entities.DbpostCode</class>
+    <class>com.davido.entities.DbtrainStation</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+</persistence>
