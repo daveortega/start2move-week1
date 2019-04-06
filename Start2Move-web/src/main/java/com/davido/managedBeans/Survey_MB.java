@@ -9,10 +9,14 @@ import com.davido.ejb.DbViewFacadeLocal;
 import com.davido.ejb.DbbusStopFacadeLocal;
 import com.davido.entities.DbView;
 import com.davido.customObject.QuestionDropdown;
+import com.davido.customObject.QuestionMultipleChoice;
 import com.davido.customObject.QuestionSlider;
 import com.davido.customObject.SuggestedSuburs;
 import com.davido.ejb.DbHospitalFacadeLocal;
 import com.davido.ejb.DbcrimeRateFacadeLocal;
+import com.davido.ejb.DbhouseBuyingFacadeLocal;
+import com.davido.ejb.DbhouseRentFacadeLocal;
+import com.davido.ejb.DblandPriceFacadeLocal;
 import java.io.Serializable;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -30,6 +34,12 @@ import javax.ejb.EJB;
 public class Survey_MB implements Serializable {
 
     @EJB
+    private DblandPriceFacadeLocal dblandPriceFacade;
+    @EJB
+    private DbhouseRentFacadeLocal dbhouseRentFacade;
+    @EJB
+    private DbhouseBuyingFacadeLocal dbhouseBuyingFacade;
+    @EJB
     private DbcrimeRateFacadeLocal dbcrimeRateFacade;
     @EJB
     private DbHospitalFacadeLocal dbHospitalFacade;
@@ -41,9 +51,17 @@ public class Survey_MB implements Serializable {
     private QuestionDropdown questionOneObj;
     private QuestionDropdown questionTwoObj;
     private QuestionSlider questionThreeObj;
+    private QuestionMultipleChoice questionFourObj;
+    private QuestionSlider questionFiveObj;
+    private QuestionDropdown questionSixObj;
+    private QuestionMultipleChoice questionSevenObj;
     private String answerQuestionOne;
     private String answerQuestionTwo;
     private String answerQuestionThree;
+    private String answerQuestionFour;
+    private String answerQuestionFive;
+    private String answerQuestionSix;
+    private String answerQuestionSeven;
     private List<SuggestedSuburs> listOfSuggestions;
     private boolean enableQuestionOne = false;
     private boolean enableQuestionTwo = false;
@@ -65,6 +83,22 @@ public class Survey_MB implements Serializable {
 
     public QuestionSlider getQuestionThreeObj() {
         return questionThreeObj;
+    }
+
+    public QuestionMultipleChoice getQuestionFourObj() {
+        return questionFourObj;
+    }
+
+    public QuestionSlider getQuestionFiveObj() {
+        return questionFiveObj;
+    }
+
+    public QuestionDropdown getQuestionSixObj() {
+        return questionSixObj;
+    }
+
+    public QuestionMultipleChoice getQuestionSevenObj() {
+        return questionSevenObj;
     }
 
     public String getAnswerQuestionOne() {
@@ -89,6 +123,38 @@ public class Survey_MB implements Serializable {
 
     public void setAnswerQuestionThree(String answerQuestionThree) {
         this.answerQuestionThree = answerQuestionThree;
+    }
+
+    public String getAnswerQuestionFour() {
+        return answerQuestionFour;
+    }
+
+    public void setAnswerQuestionFour(String answerQuestionFour) {
+        this.answerQuestionFour = answerQuestionFour;
+    }
+
+    public String getAnswerQuestionFive() {
+        return answerQuestionFive;
+    }
+
+    public void setAnswerQuestionFive(String answerQuestionFive) {
+        this.answerQuestionFive = answerQuestionFive;
+    }
+
+    public String getAnswerQuestionSix() {
+        return answerQuestionSix;
+    }
+
+    public void setAnswerQuestionSix(String answerQuestionSix) {
+        this.answerQuestionSix = answerQuestionSix;
+    }
+
+    public String getAnswerQuestionSeven() {
+        return answerQuestionSeven;
+    }
+
+    public void setAnswerQuestionSeven(String answerQuestionSeven) {
+        this.answerQuestionSeven = answerQuestionSeven;
     }
 
     public boolean isEnableQuestionOne() {
@@ -151,8 +217,25 @@ public class Survey_MB implements Serializable {
                 questionThreeObj = buildQuestionThree();
                 enableQuestionThree = true;
                 break;
+            case "q4":
+                enableQuestionThree = false;
+                questionFourObj = buildQuestionFour();
+                enableQuestionFour = true;
+                break;
+            case "q5":
+                if (!answerQuestionFour.equals("")) {
+                    enableQuestionFour = false;
+                    questionFiveObj = buildQuestionFive();
+                    enableQuestionFive = true;
+                }
+                break;
+            case "q7":
+                enableQuestionSix = false;
+                enableQuestionFive = false;
+                questionSevenObj = buildQuestionSeven();
+                enableQuestionSeven = true;
+                break;
         }
-
     }
 
     // This method creates the object with the busStops information (Bus Stops)
@@ -205,13 +288,88 @@ public class Survey_MB implements Serializable {
             List<Object[]> listOfObj = dbcrimeRateFacade.findCrime(listOfPostCodes);
             QuestionThreeObj.setLeftValue(listOfObj.get(0)[0].toString());
             QuestionThreeObj.setRightValue(listOfObj.get(0)[1].toString());
-
+            QuestionThreeObj.setSliderValue("0.1");
+            List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbcrimeRateFacade.getAllCrime(listOfPostCodes));
+            if (!tmpListOfSuggestions.isEmpty()) {
+                listOfSuggestions = tmpListOfSuggestions;
+            }
         }
 
         return QuestionThreeObj;
     }
 
-    // This method converts a ViewList to an DropDown question type
+    // This method creates the object with the type of house (Rent - Lease)
+    private QuestionMultipleChoice buildQuestionFour() {
+        QuestionMultipleChoice QuestionFourObj = convertToMultpleChoiceObj(dbViewFacade.findByName("viewPageSection", "question4"));
+        return QuestionFourObj;
+    }
+
+    // This method creates the object for Rent - Buy Home (Rent - Lease)
+    private QuestionSlider buildQuestionFive() {
+        QuestionSlider QuestionFiveObj = convertToSliderObj(dbViewFacade.findByName("viewPageSection", "question5"));
+        List<String> listOfPostCodes = new ArrayList<>();
+        listOfSuggestions.forEach(item -> {
+            if (Double.parseDouble(item.getQuestionOneSuburbValue()) <= Double.parseDouble(answerQuestionThree) + 1
+                    && Double.parseDouble(item.getQuestionOneSuburbValue()) >= Double.parseDouble(answerQuestionThree) - 1) {
+                listOfPostCodes.add(item.getPostCode());
+            }
+        });
+        if (!listOfPostCodes.isEmpty()) {
+            if (answerQuestionFour.equals("Buy a House")) {
+                List<Object[]> listOfObj = dbhouseBuyingFacade.findHouseBuy(listOfPostCodes);
+                QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
+                QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
+                QuestionFiveObj.setSliderValue("5000");
+                List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbhouseBuyingFacade.getAllHouseBuy(listOfPostCodes));
+                if (!tmpListOfSuggestions.isEmpty()) {
+                    listOfSuggestions = tmpListOfSuggestions;
+                }
+            } else if (answerQuestionFour.equals("Rent a House")) {
+                List<Object[]> listOfObj = dbhouseRentFacade.findHouseRent(listOfPostCodes);
+                QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
+                QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
+                QuestionFiveObj.setSliderValue("10");
+                List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbhouseRentFacade.getAllHouseRent(listOfPostCodes));
+                if (!tmpListOfSuggestions.isEmpty()) {
+                    listOfSuggestions = tmpListOfSuggestions;
+                }
+            } else if (answerQuestionFour.equals("Buy a piece of land")) {
+                List<Object[]> listOfObj = dblandPriceFacade.findLandBuy(listOfPostCodes);
+                QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
+                QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
+                QuestionFiveObj.setSliderValue("10000");
+                List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dblandPriceFacade.getAllLandBuy(listOfPostCodes));
+                if (!tmpListOfSuggestions.isEmpty()) {
+                    listOfSuggestions = tmpListOfSuggestions;
+                }
+            }
+        }
+        return QuestionFiveObj;
+    }
+
+    // This method creates the object for buy Land
+    private QuestionDropdown buildQuestionSix() {
+        QuestionDropdown QuestionSixObj = convertToDropDownObj(dbViewFacade.findByName("viewPageSection", "question6"));
+        List<String> listOfPostCodes = new ArrayList<>();
+        listOfSuggestions.forEach(item -> {
+            if (Double.parseDouble(item.getQuestionOneSuburbValue()) <= Double.parseDouble(answerQuestionThree) + 1
+                    && Double.parseDouble(item.getQuestionOneSuburbValue()) >= Double.parseDouble(answerQuestionThree) - 1) {
+                listOfPostCodes.add(item.getPostCode());
+            }
+        });
+        if (!listOfPostCodes.isEmpty()) {
+            List<Object[]> listOfObj = dblandPriceFacade.findLandBuy(listOfPostCodes);
+
+        }
+        return QuestionSixObj;
+    }
+
+    private QuestionMultipleChoice buildQuestionSeven() {
+        QuestionMultipleChoice QuestionSevenObj = convertToMultpleChoiceObj(dbViewFacade.findByName("viewPageSection", "question7"));
+        return QuestionSevenObj;
+    }
+
+    // This method converts a ViewList to an dropDown question type
     private QuestionDropdown convertToDropDownObj(List<DbView> listOfObj) {
         QuestionDropdown resultantObj = new QuestionDropdown();
         for (DbView item : listOfObj) {
@@ -232,7 +390,7 @@ public class Survey_MB implements Serializable {
                     resultantObj.setButton(item.getViewFieldContent());
                     break;
                 default:
-                    System.err.println("Question1: There is not a coincidence field creating the object for fieldName: " + item.getViewFieldName());
+                    System.err.println("There is not a coincidence field creating the object for fieldName: " + item.getViewFieldName());
             }
         }
         return resultantObj;
@@ -262,9 +420,44 @@ public class Survey_MB implements Serializable {
                     resultantObj.setButton(item.getViewFieldContent());
                     break;
                 default:
-                    System.err.println("Question1: There is not a coincidence field creating the object for fieldName: " + item.getViewFieldName());
+                    System.err.println("There is not a coincidence field creating the object for fieldName: " + item.getViewFieldName());
             }
         }
+        return resultantObj;
+    }
+
+    // This method converts a ViewList to an DropDown question type
+    private QuestionMultipleChoice convertToMultpleChoiceObj(List<DbView> listOfObj) {
+        QuestionMultipleChoice resultantObj = new QuestionMultipleChoice();
+        List<String> tmpList = new ArrayList<>();
+        for (DbView item : listOfObj) {
+            switch (item.getViewFieldName()) {
+                case "header":
+                    resultantObj.setHeader(item.getViewFieldContent());
+                    break;
+                case "question":
+                    resultantObj.setQuestion(item.getViewFieldContent());
+                    break;
+                case "optionA":
+                    tmpList.add(item.getViewFieldContent());
+                    break;
+                case "optionB":
+                    tmpList.add(item.getViewFieldContent());
+                    break;
+                case "optionC":
+                    tmpList.add(item.getViewFieldContent());
+                    break;
+                case "optionD":
+                    tmpList.add(item.getViewFieldContent());
+                    break;
+                case "button":
+                    resultantObj.setButton(item.getViewFieldContent());
+                    break;
+                default:
+                    System.err.println("There is not a coincidence field creating the object for fieldName: " + item.getViewFieldName());
+            }
+        }
+        resultantObj.setOptions(tmpList);
         return resultantObj;
     }
 

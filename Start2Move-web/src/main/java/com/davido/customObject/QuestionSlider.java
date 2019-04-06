@@ -22,11 +22,12 @@ public class QuestionSlider {
     private String hint;
     private String button;
     private List<String> listOfValues;
+    private String sliderValue;
 
     public QuestionSlider() {
     }
 
-    public QuestionSlider(String header, String question, String leftLabel, String leftValue, String rightLabel, String rightValue, String hint, String button, List<String> listOfValues) {
+    public QuestionSlider(String header, String question, String leftLabel, String leftValue, String rightLabel, String rightValue, String hint, String button, List<String> listOfValues, String sliderValue) {
         this.header = header;
         this.question = question;
         this.leftLabel = leftLabel;
@@ -36,6 +37,7 @@ public class QuestionSlider {
         this.hint = hint;
         this.button = button;
         this.listOfValues = listOfValues;
+        this.sliderValue = sliderValue;
     }
 
     public String getHeader() {
@@ -108,6 +110,14 @@ public class QuestionSlider {
 
     public void setRightValue(String rightValue) {
         this.rightValue = rightValue;
+    }
+
+    public String getSliderValue() {
+        return sliderValue;
+    }
+
+    public void setSliderValue(String sliderValue) {
+        this.sliderValue = sliderValue;
     }
     
 }

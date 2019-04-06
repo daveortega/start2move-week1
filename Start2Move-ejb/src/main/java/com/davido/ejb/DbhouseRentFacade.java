@@ -6,9 +6,12 @@
 package com.davido.ejb;
 
 import com.davido.entities.DbhouseRent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +31,45 @@ public class DbhouseRentFacade extends AbstractFacade<DbhouseRent> implements Db
     public DbhouseRentFacade() {
         super(DbhouseRent.class);
     }
-    
+
+    @Override
+    public List<Object[]> findHouseRent(List<String> listOfPostCodes) {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT MIN(rentPrice), MAX(rentPrice) "
+                    + "FROM (SELECT ROUND(AVG(a.houseRentPrice)) rentPrice "
+                    + "FROM db_houseRent a "
+                    + "WHERE a.postCode IN ?1 "
+                    + "GROUP BY a.postCode) a";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
+    @Override
+    public List<Object[]> getAllHouseRent(List<String> listOfPostCodes) {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT DISTINCT a.postCode, b.postCodeName, ROUND(AVG(a.houseRentPrice)) "
+                    + "FROM db_houseRent a, db_postCode b "
+                    + "WHERE a.postCode = b.postCodeId "
+                    + "AND a.postLine = b.postCodeLine "
+                    + "AND a.postCode IN ?1 "
+                    + "GROUP BY a.postCode, b.postCodeName "
+                    + "ORDER BY 3";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }

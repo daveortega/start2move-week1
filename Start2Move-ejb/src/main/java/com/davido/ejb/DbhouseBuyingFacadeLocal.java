@@ -29,5 +29,9 @@ public interface DbhouseBuyingFacadeLocal {
     List<DbhouseBuying> findRange(int[] range);
 
     int count();
-    
+
+    List<Object[]> findHouseBuy(List<String> listOfPostCodes);
+
+    List<Object[]> getAllHouseBuy(List<String> listOfPostCodes);
+
 }

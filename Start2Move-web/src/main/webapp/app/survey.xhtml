@@ -8,83 +8,190 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>TODO supply a title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </h:head>
     <h:body>
-        <f:view>
-            <h:form>
-                <div class="container">
-                    <div class="surveyBox">
-                        <div style="display:#{Survey_MB.enableQuestionOne?'block':'none'}">
-                            <h1>Question 1</h1>
-                            <h:outputLabel value="#{Survey_MB.questionOneObj.header}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionOneObj.question}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionOneObj.label}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionOneObj.hint}"></h:outputLabel>
-                            <br/>
-                            <h:selectOneMenu value="#{Survey_MB.answerQuestionOne}">
-                                <f:selectItems value="#{Survey_MB.questionOneObj.listOfValues}" />
-                            </h:selectOneMenu>
-                            <br/>
-                            <h:commandButton value="#{Survey_MB.questionOneObj.button}">
-                                <f:ajax listener="#{Survey_MB.buildSurvey('q2')}" execute="@form" render="@form"/>
-                            </h:commandButton>
-                            <br/> 
-                        </div>
+        <ui:composition template="./../templates/layout/main-layout.xhtml">
+            <ui:define name="content">
+                <f:view>
+                    <h:form>
+                        <div class="vertical-center">
+                            <div class="surveyBox container">
+                                <div style="display:#{Survey_MB.enableQuestionOne?'block':'none'}">
+                                    <div class="card">
+                                        <div class="card-header bg-primary-light text-white text-center">
+                                            #{Survey_MB.questionOneObj.header}
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">#{Survey_MB.questionOneObj.question}</h5>
+                                            <p class="card-text">#{Survey_MB.questionOneObj.hint}</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="input-group mb-3 row justify-content-center">
+                                                <h:selectOneMenu class="form-control input-dropdown" style="max-width: 80px" value="#{Survey_MB.answerQuestionOne}">
+                                                    <f:selectItems value="#{Survey_MB.questionOneObj.listOfValues}" />
+                                                </h:selectOneMenu>
+                                                <h:commandButton class="btn btn-primary" value="#{Survey_MB.questionOneObj.button}">
+                                                    <f:ajax listener="#{Survey_MB.buildSurvey('q2')}" execute="@form" render="@form"/>
+                                                </h:commandButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div style="display:#{Survey_MB.enableQuestionTwo?'block':'none'}">
-                            <h1>Question 2</h1>
-                            <h:outputLabel value="#{Survey_MB.questionTwoObj.header}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionTwoObj.question}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionTwoObj.label}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionTwoObj.hint}"></h:outputLabel>
-                            <br/>
-                            <h:selectOneMenu value="#{Survey_MB.answerQuestionTwo}">
-                                <f:selectItems value="#{Survey_MB.questionTwoObj.listOfValues}" />
-                            </h:selectOneMenu>
-                            <br/>
-                            <h:commandButton value="#{Survey_MB.questionTwoObj.button}">
-                                <f:ajax listener="#{Survey_MB.buildSurvey('q3')}" execute="@form" render="@form"/>
-                            </h:commandButton>
-                            <br/> 
-                        </div>
+                                <div style="display:#{Survey_MB.enableQuestionTwo?'block':'none'}">
+                                    <div class="card">
+                                        <div class="card-header bg-primary-light text-white text-center">
+                                            #{Survey_MB.questionTwoObj.header}
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">#{Survey_MB.questionTwoObj.question}</h5>
+                                            <p class="card-text">#{Survey_MB.questionTwoObj.hint}</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="input-group mb-3 row justify-content-center">
+                                                <h:selectOneMenu class="form-control input-dropdown" style="max-width: 80px" value="#{Survey_MB.answerQuestionTwo}">
+                                                    <f:selectItems value="#{Survey_MB.questionTwoObj.listOfValues}" />
+                                                </h:selectOneMenu>
+                                                <h:commandButton class="btn btn-primary" value="#{Survey_MB.questionTwoObj.button}">
+                                                    <f:ajax listener="#{Survey_MB.buildSurvey('q3')}" execute="@form" render="@form"/>
+                                                </h:commandButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div style="display:#{Survey_MB.enableQuestionThree?'block':'none'}">
-                            <h1>Question 3</h1>
-                            <h:outputLabel value="#{Survey_MB.questionThreeObj.header}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionThreeObj.question}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionThreeObj.hint}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionThreeObj.leftLabel}"></h:outputLabel>
-                            <br/>
-                            <h:outputLabel value="#{Survey_MB.questionThreeObj.rightLabel}"></h:outputLabel>
-                            <br/>
-                            <p:inputText id="decimal" value="#{Survey_MB.answerQuestionThree}" />
-                            <p:slider for="decimal" minValue="#{Survey_MB.questionThreeObj.leftValue}" 
-                                      maxValue="#{Survey_MB.questionThreeObj.rightValue}" 
-                                      step="0.1"/>
-                            <br/>
-                            <h:commandButton value="#{Survey_MB.questionTwoObj.button}">
-                                <f:ajax listener="#{Survey_MB.buildSurvey('q4')}" execute="@form" render="@form"/>
-                            </h:commandButton>
-                            <br/> 
-                        </div>
+                                <div style="display:#{Survey_MB.enableQuestionThree?'block':'none'}">
+                                    <h1>Question 3</h1>
+                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.header}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.question}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.hint}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.leftLabel}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.rightLabel}"></h:outputLabel>
+                                    <br/>
+                                    <p:inputText id="decimal" value="#{Survey_MB.answerQuestionThree}" />
+                                    <p:slider for="decimal" minValue="#{Survey_MB.questionThreeObj.leftValue}" 
+                                              maxValue="#{Survey_MB.questionThreeObj.rightValue}" 
+                                              step="#{Survey_MB.questionThreeObj.sliderValue}"/>
+                                    <br/>
+                                    <h:commandButton value="#{Survey_MB.questionThreeObj.button}">
+                                        <f:ajax listener="#{Survey_MB.buildSurvey('q4')}" execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                    <br/> 
+                                </div>
 
-                    </div>
-                </div>  
-            </h:form>     
-        </f:view>
+                                <div style="display:#{Survey_MB.enableQuestionFour?'block':'none'}">
+                                    <h1>Question 4</h1>
+                                    <h:outputLabel value="#{Survey_MB.questionFourObj.header}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFourObj.question}"></h:outputLabel>
+                                    <br/>
+                                    <h:selectOneRadio value = "#{Survey_MB.answerQuestionFour}"> 
+                                        <f:selectItems value="#{Survey_MB.questionFourObj.options}" />
+                                    </h:selectOneRadio>  
+                                    <br/>
+                                    <h:commandButton value="#{Survey_MB.questionFourObj.button}">
+                                        <f:ajax listener="#{Survey_MB.buildSurvey('q5')}" execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                    <br/> 
+                                </div>
+
+                                <div style="display:#{Survey_MB.enableQuestionFive?'block':'none'}">
+                                    <h1>Question 5</h1>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.header}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.question}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.hint}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.leftLabel}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.rightLabel}"></h:outputLabel>
+                                    <br/>
+                                    <p:inputText id="decimal1" value="#{Survey_MB.answerQuestionFive}" />
+                                    <p:slider for="decimal1" minValue="#{Survey_MB.questionFiveObj.leftValue}" 
+                                              maxValue="#{Survey_MB.questionFiveObj.rightValue}" 
+                                              step="#{Survey_MB.questionFiveObj.sliderValue}"/>
+                                    <br/>
+                                    <h:commandButton value="#{Survey_MB.questionFiveObj.button}">
+                                        <f:ajax listener="#{Survey_MB.buildSurvey('q7')}" execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                    <br/> 
+                                </div>
+
+                                <div style="display:#{Survey_MB.enableQuestionSix?'block':'none'}">
+                                    <h1>Question 6</h1>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.header}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.question}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.hint}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.leftLabel}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionFiveObj.rightLabel}"></h:outputLabel>
+                                    <br/>
+                                    <p:inputText id="decimal2" value="#{Survey_MB.answerQuestionFive}" />
+                                    <p:slider for="decimal2" minValue="#{Survey_MB.questionFiveObj.leftValue}" 
+                                              maxValue="#{Survey_MB.questionFiveObj.rightValue}" 
+                                              step="10000"/>
+                                    <br/>
+                                    <h:commandButton value="#{Survey_MB.questionFiveObj.button}">
+                                        <f:ajax listener="#{Survey_MB.buildSurvey('q7')}" execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                    <br/> 
+                                </div>                        
+
+                                <div style="display:#{Survey_MB.enableQuestionSix?'block':'none'}">
+                                    <h1>Question 6</h1>
+                                    <h:outputLabel value="#{Survey_MB.questionSixObj.header}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionSixObj.question}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionSixObj.label}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionSixObj.hint}"></h:outputLabel>
+                                    <br/>
+                                    <h:selectOneMenu value="#{Survey_MB.answerQuestionSix}">
+                                        <f:selectItems value="#{Survey_MB.questionSixObj.listOfValues}" />
+                                    </h:selectOneMenu>
+                                    <br/>
+                                    <h:commandButton value="#{Survey_MB.questionSixObj.button}">
+                                        <f:ajax listener="#{Survey_MB.buildSurvey('q7')}" execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                    <br/> 
+                                </div>   
+
+                                <div style="display:#{Survey_MB.enableQuestionSeven?'block':'none'}">
+                                    <h1>Question 7</h1>
+                                    <h:outputLabel value="#{Survey_MB.questionSevenObj.header}"></h:outputLabel>
+                                    <br/>
+                                    <h:outputLabel value="#{Survey_MB.questionSevenObj.question}"></h:outputLabel>
+                                    <br/>
+                                    <h:selectOneRadio value = "#{Survey_MB.answerQuestionSeven}"> 
+                                        <f:selectItems value="#{Survey_MB.questionSevenObj.options}" />
+                                    </h:selectOneRadio>  
+                                    <br/>
+                                    <h:commandButton value="#{Survey_MB.questionSevenObj.button}">
+                                        <f:ajax listener="#{Survey_MB.buildSurvey('q8')}" execute="@form" render="@form"/>
+                                    </h:commandButton>
+                                    <br/> 
+                                </div>
+
+                            </div>
+                        </div>  
+                    </h:form>     
+                </f:view>
+            </ui:define>
+        </ui:composition>
     </h:body>
 </html>

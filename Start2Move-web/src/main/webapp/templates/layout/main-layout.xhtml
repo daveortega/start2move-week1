@@ -18,10 +18,10 @@
     <h:body>
 
         <ui:include src="../../common/menu.xhtml"/>
-        <ui:include src="../../common/header.xhtml" />
         <div class="container">
-            <ui:include src="../../common/content.xhtml" />
-            <ui:include src="../../common/footer.xhtml" />
+            <div id="content" class="center_content">
+                <ui:insert name="content"></ui:insert>
+            </div>
         </div>
 
         <!-- load js at bottom for faster loading-->

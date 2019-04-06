@@ -30,4 +30,8 @@ public interface DbhouseRentFacadeLocal {
 
     int count();
     
+    List<Object[]> findHouseRent(List<String> listOfPostCodes);
+
+    List<Object[]> getAllHouseRent(List<String> listOfPostCodes);
+    
 }

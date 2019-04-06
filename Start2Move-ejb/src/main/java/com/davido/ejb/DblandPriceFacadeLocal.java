@@ -30,4 +30,8 @@ public interface DblandPriceFacadeLocal {
 
     int count();
     
+    List<Object[]> findLandBuy(List<String> listOfPostCodes);
+
+    List<Object[]> getAllLandBuy(List<String> listOfPostCodes);
+    
 }

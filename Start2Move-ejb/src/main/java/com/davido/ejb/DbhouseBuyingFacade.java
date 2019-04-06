@@ -6,9 +6,12 @@
 package com.davido.ejb;
 
 import com.davido.entities.DbhouseBuying;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +31,41 @@ public class DbhouseBuyingFacade extends AbstractFacade<DbhouseBuying> implement
     public DbhouseBuyingFacade() {
         super(DbhouseBuying.class);
     }
-    
+
+    @Override
+    public List<Object[]> findHouseBuy(List<String> listOfPostCodes) {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT MIN(a.buyingPrice), MAX(a.buyingPrice) "
+                    + "FROM db_houseBuying a "
+                    + "WHERE a.postCodeId IN ?1";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
+    @Override
+    public List<Object[]> getAllHouseBuy(List<String> listOfPostCodes) {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT DISTINCT a.postCodeId, b.postCodeName, buyingPrice "
+                    + "FROM db_houseBuying a, db_postCode b "
+                    + "WHERE a.postCodeId = b.postCodeId "
+                    + "AND a.postCodeLine = b.postCodeLine "
+                    + "AND a.postCodeId IN ?1";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }
