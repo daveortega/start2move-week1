@@ -30,4 +30,8 @@ public interface DbSchoolFacadeLocal {
 
     int count();
     
+    List<Object[]> findSchools(List<String> listOfPostCodes);
+
+    List<Object[]> getAllSchools(List<String> listOfPostCodes);
+    
 }

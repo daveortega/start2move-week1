@@ -74,15 +74,9 @@ and open the template in the editor.
                                     <br/>
                                     <h:outputLabel value="#{Survey_MB.questionThreeObj.hint}"></h:outputLabel>
                                     <br/>
-                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.leftLabel}"></h:outputLabel>
-                                    <br/>
-                                    <h:outputLabel value="#{Survey_MB.questionThreeObj.rightLabel}"></h:outputLabel>
-                                    <br/>
-                                    <p:inputText id="decimal" value="#{Survey_MB.answerQuestionThree}" />
-                                    <p:slider for="decimal" minValue="#{Survey_MB.questionThreeObj.leftValue}" 
-                                              maxValue="#{Survey_MB.questionThreeObj.rightValue}" 
-                                              step="#{Survey_MB.questionThreeObj.sliderValue}"/>
-                                    <br/>
+                                    <h:selectOneMenu value="#{Survey_MB.answerQuestionThree}">
+                                        <f:selectItems value="#{Survey_MB.questionThreeObj.listOfValues}" />
+                                    </h:selectOneMenu>
                                     <h:commandButton value="#{Survey_MB.questionThreeObj.button}">
                                         <f:ajax listener="#{Survey_MB.buildSurvey('q4')}" execute="@form" render="@form"/>
                                     </h:commandButton>

@@ -13,10 +13,12 @@ import com.davido.customObject.QuestionMultipleChoice;
 import com.davido.customObject.QuestionSlider;
 import com.davido.customObject.SuggestedSuburs;
 import com.davido.ejb.DbHospitalFacadeLocal;
+import com.davido.ejb.DbSchoolFacadeLocal;
 import com.davido.ejb.DbcrimeRateFacadeLocal;
 import com.davido.ejb.DbhouseBuyingFacadeLocal;
 import com.davido.ejb.DbhouseRentFacadeLocal;
 import com.davido.ejb.DblandPriceFacadeLocal;
+import java.io.IOException;
 import java.io.Serializable;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -33,6 +36,8 @@ import javax.ejb.EJB;
 @ViewScoped
 public class Survey_MB implements Serializable {
 
+    @EJB
+    private DbSchoolFacadeLocal dbSchoolFacade;
     @EJB
     private DblandPriceFacadeLocal dblandPriceFacade;
     @EJB
@@ -50,7 +55,7 @@ public class Survey_MB implements Serializable {
 
     private QuestionDropdown questionOneObj;
     private QuestionDropdown questionTwoObj;
-    private QuestionSlider questionThreeObj;
+    private QuestionDropdown questionThreeObj;
     private QuestionMultipleChoice questionFourObj;
     private QuestionSlider questionFiveObj;
     private QuestionDropdown questionSixObj;
@@ -62,6 +67,7 @@ public class Survey_MB implements Serializable {
     private String answerQuestionFive;
     private String answerQuestionSix;
     private String answerQuestionSeven;
+    private String answerTypeFive;
     private List<SuggestedSuburs> listOfSuggestions;
     private boolean enableQuestionOne = false;
     private boolean enableQuestionTwo = false;
@@ -81,7 +87,7 @@ public class Survey_MB implements Serializable {
         return questionTwoObj;
     }
 
-    public QuestionSlider getQuestionThreeObj() {
+    public QuestionDropdown getQuestionThreeObj() {
         return questionThreeObj;
     }
 
@@ -235,6 +241,11 @@ public class Survey_MB implements Serializable {
                 questionSevenObj = buildQuestionSeven();
                 enableQuestionSeven = true;
                 break;
+            case "q8":
+                enableQuestionSeven = false;
+                buildFinalAnswer("Survey");
+                break;
+            default:
         }
     }
 
@@ -276,8 +287,8 @@ public class Survey_MB implements Serializable {
     }
 
     // This method creates the object with the crime question (Criminal tolerance)
-    private QuestionSlider buildQuestionThree() {
-        QuestionSlider QuestionThreeObj = convertToSliderObj(dbViewFacade.findByName("viewPageSection", "question3"));
+    private QuestionDropdown buildQuestionThree() {
+        QuestionDropdown QuestionThreeObj = convertToDropDownObj(dbViewFacade.findByName("viewPageSection", "question3"));
         List<String> listOfPostCodes = new ArrayList<>();
         listOfSuggestions.forEach(item -> {
             if (answerQuestionTwo.equals(item.getQuestionOneSuburbValue())) {
@@ -286,9 +297,10 @@ public class Survey_MB implements Serializable {
         });
         if (!listOfPostCodes.isEmpty()) {
             List<Object[]> listOfObj = dbcrimeRateFacade.findCrime(listOfPostCodes);
-            QuestionThreeObj.setLeftValue(listOfObj.get(0)[0].toString());
-            QuestionThreeObj.setRightValue(listOfObj.get(0)[1].toString());
-            QuestionThreeObj.setSliderValue("0.1");
+            // QuestionThreeObj.setLeftValue(listOfObj.get(0)[0].toString());
+            // QuestionThreeObj.setRightValue(listOfObj.get(0)[1].toString());
+            // QuestionThreeObj.setSliderValue("0.1");
+            QuestionThreeObj.setListOfValues(listOfValues(listOfObj.get(0)[0].toString(), listOfObj.get(0)[1].toString(), "0.1", "decimal"));
             List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbcrimeRateFacade.getAllCrime(listOfPostCodes));
             if (!tmpListOfSuggestions.isEmpty()) {
                 listOfSuggestions = tmpListOfSuggestions;
@@ -316,6 +328,7 @@ public class Survey_MB implements Serializable {
         });
         if (!listOfPostCodes.isEmpty()) {
             if (answerQuestionFour.equals("Buy a House")) {
+                answerTypeFive = "Buy a House";
                 List<Object[]> listOfObj = dbhouseBuyingFacade.findHouseBuy(listOfPostCodes);
                 QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
                 QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
@@ -325,6 +338,7 @@ public class Survey_MB implements Serializable {
                     listOfSuggestions = tmpListOfSuggestions;
                 }
             } else if (answerQuestionFour.equals("Rent a House")) {
+                answerTypeFive = "Rent a House";
                 List<Object[]> listOfObj = dbhouseRentFacade.findHouseRent(listOfPostCodes);
                 QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
                 QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
@@ -334,6 +348,7 @@ public class Survey_MB implements Serializable {
                     listOfSuggestions = tmpListOfSuggestions;
                 }
             } else if (answerQuestionFour.equals("Buy a piece of land")) {
+                answerTypeFive = "Buy a piece of land";
                 List<Object[]> listOfObj = dblandPriceFacade.findLandBuy(listOfPostCodes);
                 QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
                 QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
@@ -359,14 +374,71 @@ public class Survey_MB implements Serializable {
         });
         if (!listOfPostCodes.isEmpty()) {
             List<Object[]> listOfObj = dblandPriceFacade.findLandBuy(listOfPostCodes);
-
         }
         return QuestionSixObj;
     }
 
     private QuestionMultipleChoice buildQuestionSeven() {
         QuestionMultipleChoice QuestionSevenObj = convertToMultpleChoiceObj(dbViewFacade.findByName("viewPageSection", "question7"));
+        List<String> listOfPostCodes = new ArrayList<>();
+        int amountToIncrease = 0;
+        if (answerTypeFive.equals("Buy a House")) {
+            amountToIncrease = 30000;
+        } else if (answerTypeFive.equals("Rent a House")) {
+            amountToIncrease = 100;
+        } else if (answerTypeFive.equals("Buy a piece of land")) {
+            amountToIncrease = 50000;
+        }
+        final int a = amountToIncrease;
+        listOfSuggestions.forEach(item -> {
+            if (Integer.parseInt(item.getQuestionOneSuburbValue()) <= Integer.parseInt(answerQuestionFive) + a
+                    && Integer.parseInt(item.getQuestionOneSuburbValue()) >= Integer.parseInt(answerQuestionFive) - a) {
+                listOfPostCodes.add(item.getPostCode());
+            }
+        });
+        if (!listOfPostCodes.isEmpty()) {
+            List<Object[]> listOfObj = dbSchoolFacade.findSchools(listOfPostCodes);
+            List<String> listOfString = new ArrayList<>();
+            for (Object item : listOfObj) {
+                listOfString.add(item.toString());
+            }
+            QuestionSevenObj.setOptions(listOfString);
+            List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbSchoolFacade.getAllSchools(listOfPostCodes));
+            if (!tmpListOfSuggestions.isEmpty()) {
+                listOfSuggestions = tmpListOfSuggestions;
+            }
+        }
         return QuestionSevenObj;
+    }
+
+    // This method finds the best suburb and redirects to the final page.
+    private String buildFinalAnswer(String callType) {
+        if (callType.equals("Survey")) {
+            List<String> listOfPostCodes = new ArrayList<>();
+            listOfSuggestions.forEach(item -> {
+                if (answerQuestionSeven.equals(item.getQuestionOneSuburbValue())) {
+                   listOfPostCodes.add(item.getPostCode());
+                }
+            });
+            try { 
+                if (!listOfPostCodes.isEmpty()) {
+                    // code to finish when there is coincidence on school
+                    String postCodeSuggested = listOfPostCodes.get(0);
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("suggestedPostCode", postCodeSuggested);
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("result.xhtml");
+                } else {
+                    // code to finish when there is no coincidence
+                    String postCodeSuggested = listOfSuggestions.get(0).getPostCode();
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("suggestedPostCode", postCodeSuggested);
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("result.xhtml");
+                }
+            } catch (IOException e) { 
+                System.err.println(e);
+            }  
+        } else if (callType.equals("Exit")) {
+            
+        }
+        return null;
     }
 
     // This method converts a ViewList to an dropDown question type
@@ -459,6 +531,27 @@ public class Survey_MB implements Serializable {
         }
         resultantObj.setOptions(tmpList);
         return resultantObj;
+    }
+    
+    // This method creates a range from one inital value to other one.
+    private List<String> listOfValues(String initialValue, String finalValue, String step, String type){
+        List<String> resultantList = new ArrayList<>();
+        if (type.equals("integer")) {
+            int initalV = Integer.parseInt(initialValue);
+            int finalV = Integer.parseInt(initialValue);
+            int stepV = Integer.parseInt(step);
+            for (int i = initalV; i <= finalV; i += stepV) {
+                resultantList.add(Integer.toString(i));
+            }
+        } else if (type.equals("decimal")) {
+            Double initalV = Double.parseDouble(initialValue);
+            Double finalV = Double.parseDouble(initialValue);
+            Double stepV = Double.parseDouble(step);
+            for (Double i = initalV; i <= finalV; i += stepV) {
+                resultantList.add(Double.toString(i));
+            }
+        }
+        return resultantList;
     }
 
     // This method casts an object to a list of suggestions

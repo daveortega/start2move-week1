@@ -6,9 +6,12 @@
 package com.davido.ejb;
 
 import com.davido.entities.DbSchool;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +31,41 @@ public class DbSchoolFacade extends AbstractFacade<DbSchool> implements DbSchool
     public DbSchoolFacade() {
         super(DbSchool.class);
     }
-    
+
+    @Override
+    public List<Object[]> findSchools(List<String> listOfPostCodes) {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT DISTINCT a.schoolType "
+                    + "FROM db_school a "
+                    + "WHERE a.postCode IN ?1";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
+    @Override
+    public List<Object[]> getAllSchools(List<String> listOfPostCodes) {
+        String querySTR;
+        List<Object[]> resultantList = new ArrayList<>();
+        try {
+            querySTR = "SELECT DISTINCT b.postCodeId, b.postCodeName, a.schoolType "
+                    + "FROM db_school a, db_postCode b "
+                    + "WHERE a.postCode = b.postCodeId "
+                    + "AND a.postLine = b.postCodeLine "
+                    + "AND a.postCode IN ?1";
+            Query query = em.createNativeQuery(querySTR);
+            query.setParameter(1, listOfPostCodes);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }
