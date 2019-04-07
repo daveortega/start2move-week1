@@ -20,6 +20,7 @@ import com.davido.ejb.DbhouseRentFacadeLocal;
 import com.davido.ejb.DblandPriceFacadeLocal;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class Survey_MB implements Serializable {
     private QuestionDropdown questionTwoObj;
     private QuestionDropdown questionThreeObj;
     private QuestionMultipleChoice questionFourObj;
-    private QuestionSlider questionFiveObj;
+    private QuestionDropdown questionFiveObj;
     private QuestionDropdown questionSixObj;
     private QuestionMultipleChoice questionSevenObj;
     private String answerQuestionOne;
@@ -95,7 +96,7 @@ public class Survey_MB implements Serializable {
         return questionFourObj;
     }
 
-    public QuestionSlider getQuestionFiveObj() {
+    public QuestionDropdown getQuestionFiveObj() {
         return questionFiveObj;
     }
 
@@ -317,8 +318,8 @@ public class Survey_MB implements Serializable {
     }
 
     // This method creates the object for Rent - Buy Home (Rent - Lease)
-    private QuestionSlider buildQuestionFive() {
-        QuestionSlider QuestionFiveObj = convertToSliderObj(dbViewFacade.findByName("viewPageSection", "question5"));
+    private QuestionDropdown buildQuestionFive() {
+        QuestionDropdown QuestionFiveObj = convertToDropDownObj(dbViewFacade.findByName("viewPageSection", "question5"));
         List<String> listOfPostCodes = new ArrayList<>();
         listOfSuggestions.forEach(item -> {
             if (Double.parseDouble(item.getQuestionOneSuburbValue()) <= Double.parseDouble(answerQuestionThree) + 1
@@ -330,9 +331,10 @@ public class Survey_MB implements Serializable {
             if (answerQuestionFour.equals("Buy a House")) {
                 answerTypeFive = "Buy a House";
                 List<Object[]> listOfObj = dbhouseBuyingFacade.findHouseBuy(listOfPostCodes);
-                QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
-                QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
-                QuestionFiveObj.setSliderValue("5000");
+                // QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
+                // QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
+                // QuestionFiveObj.setSliderValue("5000");
+                QuestionFiveObj.setListOfValues(listOfValues(listOfObj.get(0)[0].toString(), listOfObj.get(0)[1].toString(), "5000", "integer"));
                 List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbhouseBuyingFacade.getAllHouseBuy(listOfPostCodes));
                 if (!tmpListOfSuggestions.isEmpty()) {
                     listOfSuggestions = tmpListOfSuggestions;
@@ -340,9 +342,10 @@ public class Survey_MB implements Serializable {
             } else if (answerQuestionFour.equals("Rent a House")) {
                 answerTypeFive = "Rent a House";
                 List<Object[]> listOfObj = dbhouseRentFacade.findHouseRent(listOfPostCodes);
-                QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
-                QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
-                QuestionFiveObj.setSliderValue("10");
+                // QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
+                // QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
+                // QuestionFiveObj.setSliderValue("10");
+                QuestionFiveObj.setListOfValues(listOfValues(listOfObj.get(0)[0].toString(), listOfObj.get(0)[1].toString(), "10", "integer"));
                 List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dbhouseRentFacade.getAllHouseRent(listOfPostCodes));
                 if (!tmpListOfSuggestions.isEmpty()) {
                     listOfSuggestions = tmpListOfSuggestions;
@@ -350,9 +353,10 @@ public class Survey_MB implements Serializable {
             } else if (answerQuestionFour.equals("Buy a piece of land")) {
                 answerTypeFive = "Buy a piece of land";
                 List<Object[]> listOfObj = dblandPriceFacade.findLandBuy(listOfPostCodes);
-                QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
-                QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
-                QuestionFiveObj.setSliderValue("10000");
+                // QuestionFiveObj.setLeftValue(listOfObj.get(0)[0].toString());
+                // QuestionFiveObj.setRightValue(listOfObj.get(0)[1].toString());
+                // QuestionFiveObj.setSliderValue("10000");
+                QuestionFiveObj.setListOfValues(listOfValues(listOfObj.get(0)[0].toString(), listOfObj.get(0)[1].toString(), "10000", "integer"));
                 List<SuggestedSuburs> tmpListOfSuggestions = CastObjsToSuggestions(dblandPriceFacade.getAllLandBuy(listOfPostCodes));
                 if (!tmpListOfSuggestions.isEmpty()) {
                     listOfSuggestions = tmpListOfSuggestions;
@@ -425,12 +429,12 @@ public class Survey_MB implements Serializable {
                     // code to finish when there is coincidence on school
                     String postCodeSuggested = listOfPostCodes.get(0);
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("suggestedPostCode", postCodeSuggested);
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("result.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/app/result.xhtml");
                 } else {
                     // code to finish when there is no coincidence
                     String postCodeSuggested = listOfSuggestions.get(0).getPostCode();
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("suggestedPostCode", postCodeSuggested);
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("result.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/app/result.xhtml");
                 }
             } catch (IOException e) { 
                 System.err.println(e);
@@ -538,17 +542,18 @@ public class Survey_MB implements Serializable {
         List<String> resultantList = new ArrayList<>();
         if (type.equals("integer")) {
             int initalV = Integer.parseInt(initialValue);
-            int finalV = Integer.parseInt(initialValue);
+            int finalV = Integer.parseInt(finalValue);
             int stepV = Integer.parseInt(step);
             for (int i = initalV; i <= finalV; i += stepV) {
                 resultantList.add(Integer.toString(i));
             }
         } else if (type.equals("decimal")) {
+            DecimalFormat df2 = new DecimalFormat(".#");
             Double initalV = Double.parseDouble(initialValue);
-            Double finalV = Double.parseDouble(initialValue);
+            Double finalV = Double.parseDouble(finalValue);
             Double stepV = Double.parseDouble(step);
             for (Double i = initalV; i <= finalV; i += stepV) {
-                resultantList.add(Double.toString(i));
+                resultantList.add(df2.format(i));
             }
         }
         return resultantList;
