@@ -72,4 +72,19 @@ public class DbbusStopFacade extends AbstractFacade<DbbusStop> implements DbbusS
         return resultantList;
     }
 
+    @Override
+    public List<DbbusStop> findByPostcode(int postcode) {
+        String querySTR;
+        List<DbbusStop> resultantList = new ArrayList<>();
+        try {
+            querySTR = "FROM DbbusStop bs WHERE bs.dbpostCode.dbpostCodePK.postCodeId = ?1";
+            Query query = em.createQuery(querySTR);
+            query.setParameter(1, postcode);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }

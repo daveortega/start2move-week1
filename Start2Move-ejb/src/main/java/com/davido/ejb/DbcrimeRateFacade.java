@@ -74,4 +74,22 @@ public class DbcrimeRateFacade extends AbstractFacade<DbcrimeRate> implements Db
         return resultantList;
     }
 
+    @Override
+    public List<DbcrimeRate> findByPostcode(int postcode) {
+        String querySTR;
+        List<DbcrimeRate> resultantList = new ArrayList<>();
+        try {
+            querySTR = "FROM DbcrimeRate cr WHERE EXISTS ("
+                    + "SELECT 'x' FROM DbLocality l "
+                    + "WHERE l.dbpostCode.dbpostCodePK.postCodeId = ?1 "
+                    + "AND l.municipalityId = cr.municipalityId)";
+            Query query = em.createQuery(querySTR);
+            query.setParameter(1, postcode);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }

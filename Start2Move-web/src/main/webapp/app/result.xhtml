@@ -10,19 +10,168 @@ and open the template in the editor.
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Suggested Suburb</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link href="css/style.css" rel="stylesheet" type="text/css"/>
-    </h:head>
     <h:body>
         <ui:composition template="./../templates/layout/main-layout.xhtml">
             <ui:define name="content">
                 <f:view>
                     <h:form>
+                        <link href="./../css/style.css" rel="stylesheet" type="text/css"/>
                         <div class="vertical-center">
                             <div class="surveyBox container">
-                                <h1>#{result_MB.postCodeSuggested}</h1>
+                                <h1 class="heading-header">Suggested Postcode: #{result_MB.postCodeSuggested}</h1>
+                                <div class="row results-row">
+                                    <div class="card results-card">
+                                        <div class="card-header bg-primary-light text-center">
+                                            <h2>Schools</h2>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">There are 3 primary schools in #{result_MB.postCodeSuggested}:</h5>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <ui:repeat value="#{result_MB.listSchools}" var="school">
+                                                <li class="list-group-item">#{school.schoolName}</li>
+                                            </ui:repeat>
+                                        </ul>
+                                        <div class="card-footer">
+                                            This suburb ranks #2 in education.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row results-row" style="margin-top: 20px;">
+                                    <div class="card results-card">
+                                        <div class="card-header bg-primary-light text-center">
+                                            <h2>Crime Rate</h2>
+                                        </div>
+                                        <div class="card-body">
+                                            <p:dataTable value="#{result_MB.listcrimeRates}" var="cr" emptyMessage="No crime rate data was available for this postcode.">
+                                                <p:column>
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Year"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{cr.year}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Rate"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{cr.crimeRate}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                        <div class="card-footer">
+                                            This suburb ranks #6 in crime.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row results-row" style="margin-top: 20px;">
+                                    <div class="card results-card">
+                                        <div class="card-header bg-primary-light text-center">
+                                            <h2>Hospitals</h2>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">There are 3 hospitals in #{result_MB.postCodeSuggested}:</h5>
+                                            <p:dataTable value="#{result_MB.listHospitals}" var="h" emptyMessage="No hospitals were found in this postcode.">
+                                                <p:column>
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Name"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{h.labelName}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Type"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{h.type}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Address"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{h.street} #{h.roadName}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                        <div class="card-footer">
+                                            This suburb ranks #6 in medical care.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row results-row" style="margin-top: 20px;">
+                                    <div class="card results-card">
+                                        <div class="card-header bg-primary-light text-center">
+                                            <h2>Housing</h2>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <h5 class="card-title">Average Rent Prices:</h5>
+                                                <p:dataTable value="#{result_MB.listhouseRents}" var="hr" emptyMessage="No house rent data was available for this postcode.">
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Year"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{hr.year}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Rent"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{hr.houseRentPrice}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h5 class="card-title">Average Sale Prices:</h5>
+                                                <p:dataTable value="#{result_MB.listhousePrices}" var="hp" emptyMessage="No house sale price data was available for this postcode.">
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Year"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{hp.year}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Sale Price"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{hp.buyingPrice}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h5 class="card-title">Land Price:</h5>
+                                                <p:dataTable value="#{result_MB.listlandPrices}" var="lp" emptyMessage="No land price data was available for this postcode.">
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Year"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{lp.year}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Land Price"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{lp.price}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </li>
+                                        </ul>
+                                        <div class="card-footer">
+                                            This suburb ranks #4 in housing affordability.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row results-row" style="margin-top: 20px;">
+                                    <div class="card results-card">
+                                        <div class="card-header bg-primary-light text-center">
+                                            <h2>Transport</h2>
+                                        </div>
+                                        <div class="card-body">
+                                            There are #{result_MB.listbusStops.size()} bus stops and #{result_MB.listtrainStations.size()} train stations in #{result_MB.postCodeSuggested}.
+                                        </div>
+                                        <div class="card-footer">
+                                            This suburb ranks #7 in transport.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>  
                     </h:form>     

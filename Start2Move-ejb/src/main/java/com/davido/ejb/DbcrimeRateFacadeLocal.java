@@ -33,4 +33,6 @@ public interface DbcrimeRateFacadeLocal {
     List<Object[]> findCrime(List<String> listOfPostCodes);
 
     List<Object[]> getAllCrime(List<String> listOfPostCodes);
+    
+    List<DbcrimeRate> findByPostcode(int postcode);
 }

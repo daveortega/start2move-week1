@@ -34,4 +34,6 @@ public interface DblandPriceFacadeLocal {
 
     List<Object[]> getAllLandBuy(List<String> listOfPostCodes);
     
+    List<DblandPrice> findByPostcode(int postcode);
+    
 }

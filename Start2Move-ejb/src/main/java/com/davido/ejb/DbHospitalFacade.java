@@ -42,7 +42,7 @@ public class DbHospitalFacade extends AbstractFacade<DbHospital> implements DbHo
                     + "WHERE a.postCode = b.postCodeId "
                     + "AND a.postLine = b.postCodeLine "
                     + "AND a.postCode IN ?1 "
-                    + "GROUP BY b.postCodeName " 
+                    + "GROUP BY b.postCodeName "
                     + "ORDER BY 1";
             Query query = em.createNativeQuery(querySTR);
             query.setParameter(1, listOfPostCodes);
@@ -55,7 +55,7 @@ public class DbHospitalFacade extends AbstractFacade<DbHospital> implements DbHo
 
     @Override
     public List<Object[]> getAllHospitals(List<String> listOfPostCodes) {
-                String querySTR;
+        String querySTR;
         List<Object[]> resultantList = new ArrayList<>();
         try {
             querySTR = "SELECT b.postCodeId, b.postCodeName, count(X) hospitalsNo "
@@ -63,7 +63,7 @@ public class DbHospitalFacade extends AbstractFacade<DbHospital> implements DbHo
                     + "WHERE a.postCode = b.postCodeId "
                     + "AND a.postLine = b.postCodeLine "
                     + "AND a.postCode IN ?1 "
-                    + "GROUP BY a.postCode, b.postCodeName " 
+                    + "GROUP BY a.postCode, b.postCodeName "
                     + "ORDER BY 3";
             Query query = em.createNativeQuery(querySTR);
             query.setParameter(1, listOfPostCodes);
@@ -73,7 +73,20 @@ public class DbHospitalFacade extends AbstractFacade<DbHospital> implements DbHo
         }
         return resultantList;
     }
-    
-    
+
+    @Override
+    public List<DbHospital> findByPostcode(int postcode) {
+        String querySTR;
+        List<DbHospital> resultantList = new ArrayList<>();
+        try {
+            querySTR = "FROM DbHospital h WHERE h.dbpostCode.dbpostCodePK.postCodeId = ?1";
+            Query query = em.createQuery(querySTR);
+            query.setParameter(1, postcode);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
 
 }

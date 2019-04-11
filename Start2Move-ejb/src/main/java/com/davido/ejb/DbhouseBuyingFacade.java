@@ -68,4 +68,19 @@ public class DbhouseBuyingFacade extends AbstractFacade<DbhouseBuying> implement
         return resultantList;
     }
 
+    @Override
+    public List<DbhouseBuying> findByPostcode(int postcode) {
+        String querySTR;
+        List<DbhouseBuying> resultantList = new ArrayList<>();
+        try {
+            querySTR = "FROM DbhouseBuying hb WHERE hb.dbpostCode.dbpostCodePK.postCodeId = ?1";
+            Query query = em.createQuery(querySTR);
+            query.setParameter(1, postcode);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }

@@ -34,4 +34,6 @@ public interface DbhouseRentFacadeLocal {
 
     List<Object[]> getAllHouseRent(List<String> listOfPostCodes);
     
+    List<DbhouseRent> findByPostcode(int postcode);
+    
 }

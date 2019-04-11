@@ -6,9 +6,12 @@
 package com.davido.ejb;
 
 import com.davido.entities.DbtrainStation;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +31,20 @@ public class DbtrainStationFacade extends AbstractFacade<DbtrainStation> impleme
     public DbtrainStationFacade() {
         super(DbtrainStation.class);
     }
-    
+
+    @Override
+    public List<DbtrainStation> findByPostcode(int postcode) {
+        String querySTR;
+        List<DbtrainStation> resultantList = new ArrayList<>();
+        try {
+            querySTR = "FROM DbtrainStation ts WHERE ts.dbpostCode.dbpostCodePK.postCodeId = ?1";
+            Query query = em.createQuery(querySTR);
+            query.setParameter(1, postcode);
+            resultantList = query.getResultList();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return resultantList;
+    }
+
 }

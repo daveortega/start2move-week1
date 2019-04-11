@@ -30,4 +30,6 @@ public interface DbtrainStationFacadeLocal {
 
     int count();
     
+    List<DbtrainStation> findByPostcode(int postcode);
+    
 }

@@ -29,9 +29,13 @@ public interface DbbusStopFacadeLocal {
     List<DbbusStop> findRange(int[] range);
 
     int count();
-    
+
     List<Object[]> findStopsPostCode();
-    
+
     List<Object[]> getAllBusStops();
-    
+
+    List<DbbusStop> findByName(String fieldName, String fieldValue);
+
+    List<DbbusStop> findByPostcode(int postcode);
+
 }

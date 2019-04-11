@@ -29,9 +29,11 @@ public interface DbSchoolFacadeLocal {
     List<DbSchool> findRange(int[] range);
 
     int count();
-    
+
     List<Object[]> findSchools(List<String> listOfPostCodes);
 
     List<Object[]> getAllSchools(List<String> listOfPostCodes);
-    
+
+    List<DbSchool> findByPostcode(int postcode);
+
 }

@@ -33,5 +33,7 @@ public interface DbhouseBuyingFacadeLocal {
     List<Object[]> findHouseBuy(List<String> listOfPostCodes);
 
     List<Object[]> getAllHouseBuy(List<String> listOfPostCodes);
+    
+    List<DbhouseBuying> findByPostcode(int postcode);
 
 }
