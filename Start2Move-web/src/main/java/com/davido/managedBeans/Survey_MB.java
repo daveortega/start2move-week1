@@ -429,12 +429,12 @@ public class Survey_MB implements Serializable {
                     // code to finish when there is coincidence on school
                     String postCodeSuggested = listOfPostCodes.get(0);
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("suggestedPostCode", postCodeSuggested);
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/app/result.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/version1/app/result.xhtml");
                 } else {
                     // code to finish when there is no coincidence
                     String postCodeSuggested = listOfSuggestions.get(0).getPostCode();
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("suggestedPostCode", postCodeSuggested);
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/app/result.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/version1/app/result.xhtml");
                 }
             } catch (IOException e) { 
                 System.err.println(e);
