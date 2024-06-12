@@ -1,0 +1,25 @@
+services:
+  wildfly:
+    image: quay.io/wildfly/wildfly
+    command: sh -c "/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 && /opt/jboss/wildfly/bin/add-user.sh admin Test@1234 --silent"
+    ports:
+      - '80809:8080'
+      - '99909:9990'
+    volumes:
+      - 's2m_wildfly_data:/opt/jboss/wildfly'
+  database:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=regional_victoria_V3
+      - MYSQL_ROOT_PASSWORD=2018Centos.
+    ports:
+      - '33069:3306'
+    volumes:
+      - 's2m_database_data:/var/lib/mysql'
+
+volumes:
+  s2m_wildfly_data:
+    driver: local
+  s2m_database_data:
+    driver: local
