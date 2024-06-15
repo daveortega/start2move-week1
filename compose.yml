@@ -12,7 +12,7 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=regional_victoria_V3
-      - MYSQL_ROOT_PASSWORD=2018Centos.
+      - MYSQL_ROOT_PASSWORD=someveryimportantsecret
     ports:
       - '33069:3306'
     volumes:
